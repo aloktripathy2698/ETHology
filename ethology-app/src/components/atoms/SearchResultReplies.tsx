@@ -2,7 +2,7 @@ import { Grid, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ISearchResultDetails } from "../../interfaces/interface";
-import { getTweetRepliesByID } from "../../services/solrSearch";
+import { getTweetRepliesByID } from "../../services/search";
 import SearchResultSkeleton from "../SearchResultSkeleton";
 import NoResults from "./NoResults";
 import SearchResult from "./SearchResult";
@@ -58,9 +58,9 @@ const SearchResultReplies = (props: ISearchResultDetails) => {
                     <SearchResult
                       routeToTwitter
                       annotation={searchResult[0] || "N/A"}
-                      subtitle={searchResult[0].tweet_date || "N/A"}
+                      subtitle={searchResult[0].listing_date || "N/A"}
                       title={
-                        searchResult[0].tweet_text || "Title not available"
+                        searchResult[0].listing_text || "Title not available"
                       }
                     />
                   }

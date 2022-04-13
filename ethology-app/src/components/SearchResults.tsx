@@ -3,9 +3,10 @@ import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { URLSearchParams } from "url";
+import { MODE_DEBUG } from "../constants";
 
 import { ISearchResultResponse } from "../interfaces/interface";
-import { getSearchResults } from "../services/solrSearch";
+import { getSearchResults } from "../services/search";
 import NoResults from "./atoms/NoResults";
 import SearchField from "./atoms/SearchField";
 import SearchResult from "./atoms/SearchResult";
@@ -64,6 +65,7 @@ const SearchResults = () => {
         rows_per_page: rowsPerPage,
       });
       if (data.length > 0) {
+        MODE_DEBUG && console.log("[searchResults] data received: ", data);
         setSearchResults(data);
         setTotalResults(count);
         enqueueSnackbar(`${count} search results found`, {
@@ -111,21 +113,23 @@ const SearchResults = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} paddingTop={2}>
-          <Legends /> </Grid> </Grid>
+          <Legends />{" "}
+        </Grid>{" "}
+      </Grid>
       {isLoading ? (
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
           <Grid item key={i} xs={12} sx={{ width: "100%" }}>
             <SearchResultSkeleton />
           </Grid>
         ))
-      ) : searchResults.length > 0 ? (
+      ) : searchResults.length > 0 ? (      
         searchResults.map((searchResult: any) => (
-          <Grid item key={searchResult[0].id} xs={12} sx={{ width: "100%" }}>
+          <Grid item key={searchResult.id} xs={12} sx={{ width: "100%" }}>
             {
               <SearchResult
-                annotation={searchResult[0] || "N/A"}
-                subtitle={searchResult[0].tweet_date || "N/A"}
-                title={searchResult[0].tweet_text || "Title not available"}
+                annotation={searchResult || "N/A"}
+                subtitle={searchResult.listing_date || "N/A"}
+                title={searchResult.listing_text || "Title not available"}
                 routeToTwitter={false}
               />
             }

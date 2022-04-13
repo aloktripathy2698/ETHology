@@ -19,7 +19,7 @@ import { FILTER_OPTIONS } from "../constants";
 import { useLocation, useNavigate } from "react-router";
 import { createPOIArr, getFilterString } from "./utils";
 import { Link } from "react-router-dom";
-import { getTopNPois } from "../services/solrSearch";
+import { getTopNPois } from "../services/search";
 
 const RootView = (props: IRootView) => {
   const hideFilter = props.hideFilter;
@@ -63,14 +63,14 @@ const RootView = (props: IRootView) => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    // fetch the top POIs
-    const fetchTopPOIs = async () => {
-      const response = await getTopNPois(30);
-      setFilterState({ ...filterState, poi: createPOIArr(response) });
-    };
-    fetchTopPOIs();
-  }, []);
+  // useEffect(() => {
+  //   // fetch the top POIs
+  //   const fetchTopPOIs = async () => {
+  //     const response = await getTopNPois(30);
+  //     setFilterState({ ...filterState, poi: createPOIArr(response) });
+  //   };
+  //   fetchTopPOIs();
+  // }, []);
 
   return (
     <FilterContext.Provider value={filterState}>

@@ -1,11 +1,13 @@
 // This file contains all the interfaces used in the application
 
 import React from "react";
+import Web3 from "web3";
 
 export interface IRootView {
   root: JSX.Element;
   hideFilter?: boolean;
   viewName?: string;
+  web3?: Web3;
 }
 
 export interface ISearchField {
@@ -39,17 +41,14 @@ export interface IPaginate {
 
 export interface ISearchResultResponse {
   _version_?: string;
-  tweet_en?: string | string[];
-  tweet_es?: string | string[];
-  tweet_hi?: string | string[];
   poi_name?: string;
   sentiment?: string;
+  mentions?: string[];
   country: string;
-  id: string;
-  mentions: string[];
-  tweet_date: string;
-  tweet_lang: string;
-  tweet_text: string;
+  id: string;  
+  listing_date: string;
+  listing_lang: string;
+  listing_text: string;
   verified: boolean;
 }
 

@@ -2,7 +2,7 @@ import { CircularProgress, Grid, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ISearchResultDetails } from "../../interfaces/interface";
-import { getTweetByID } from "../../services/solrSearch";
+import { getTweetByID } from "../../services/search";
 import SearchResultSkeleton from "../SearchResultSkeleton";
 import NoResults from "./NoResults";
 import SearchResult from "./SearchResult";
@@ -56,8 +56,8 @@ const SearchResultInfo = () => {
                   <SearchResult
                     routeToTwitter
                     annotation={searchResult[0] || "N/A"}
-                    subtitle={searchResult[0].tweet_date || "N/A"}
-                    title={searchResult[0].tweet_text || "Title not available"}
+                    subtitle={searchResult[0].listing_date || "N/A"}
+                    title={searchResult[0].listing_text || "Title not available"}
                   />
                 }
               </Grid>

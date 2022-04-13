@@ -1,19 +1,26 @@
 import axios from "axios";
+import { MODE_DEBUG } from "../constants";
 import { ISearchRequest } from "../interfaces/interface";
 import { APP_ENDPOINT, SEARCH_ENDPOINT } from "./constants";
 
 const getSearchResults = async (props: ISearchRequest) => {
   const { query, filters, page_number, rows_per_page } = props;
-
   const url = SEARCH_ENDPOINT;
-  const response = await axios.post(url, {
-    query,
-    filters,
-    page_number,
-    rows_per_page,
-  });
 
-  return { data: response.data.data, count: response.data.total_data };
+  // const response = await axios.post(url, {
+  //   query,
+  //   filters,
+  //   page_number,
+  //   rows_per_page,
+  // });
+
+  MODE_DEBUG && console.log("[getSearchResults] Looking for local DB");
+  const db = await fetch(url);
+  const data = await db.json();
+  MODE_DEBUG && console.log("[getSearchResults] data: ", data);
+
+  return { data, count: data.length };
+  //return { data: response.data.data, count: response.data.total_data };
 };
 
 const getTopNPois = async (num_pois: number) => {

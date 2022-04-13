@@ -28,6 +28,8 @@ export const SEARCH_SUGGESTIONS = [
   "Coronavirus",
 ];
 
+export const MODE_DEBUG = true;
+
 export const FILTER_OPTIONS: IFilterState = {
   poi: [
     {
@@ -71,12 +73,14 @@ export const INDIA_POIS: Array<string> = [
   "ArvindKejriwal",
   "PMO India",
 ];
+
 export const USA_POIS: Array<string> = [
   "KamalaHarris",
   "Mike_Pence",
   "Joe Biden",
   "BarackObama",
 ];
+
 export const MEXICO_POIS: Array<string> = [
   "lopezobrador_",
   "Alfredo Del Mazo",
