@@ -120,7 +120,7 @@ contract Ethology {
        }
    }
 
-   function payment(product p) validBuyerPhase(buyerPhase.FREEZE_PO){
+   function payment(uint256 productID, uint256 price) validBuyerPhase(buyerPhase.FREEZE_PO){
        if(msg.sender == supplier || poList[msg.sender].length == 0) revert();
        for( unit i = 0; i < poList[msg.sender].length; i++){
            if(poList[msg.sender][i].productInfo.id == productID && poList[msg.sender][i].productInfo.price == price){
