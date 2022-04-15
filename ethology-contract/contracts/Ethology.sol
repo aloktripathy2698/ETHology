@@ -5,6 +5,7 @@ contract Ethology {
     // structs for representing the data
     struct product {
         uint256 id;
+        uint256 quantity;
         uint256 price;
     }
 
@@ -81,21 +82,50 @@ contract Ethology {
        state = x;
    }
 
-   function addPO(product p) validBuyerPhase(buyerPhase.RAISE_PO){
-       if(msg.sender == supplier) revert();
-       poList[msg.sender].push(p);
+   function addPO(uint256 productID, uint256 price) validBuyerPhase(buyerPhase.RAISE_PO){
+       if(msg.sender == supplier || poList[msg.sender].productInfo == p) revert();
+       //poList[msg.sender].push(p);
+    //    if (poList[msg.sender] != 0){
+    //        for( uint i = 0; i < poList[msg.sender].length; i++){
+    //            if (i.productInfo.id == p.id){
+    //                i.productInfo.quantity++;
+    //            }
+    //        }
+
+        //Created purchase order object.
+        purchaseOrder po;
+
+        // Updated buyer and supplier status.
+        po.buyerStatus = buyerPhase.RAISE_PO;
+        po.supplierStatus = supplierPhase.PROCURED;
+        
+        // Created product object.
+        product p;
+        p.id = productID;
+        p.price = price;
+
+        // Updated product info.
+        po.productInfo = p;
+
+        // Added product object into poList.
+        poList[msg.sender].push(po);
    }
 
-   function removePO(product p) validBuyerPhase(buyerPhase.WITHDRAW_PO){
+   function removePO(uint256 productID, uint256 price) validBuyerPhase(buyerPhase.WITHDRAW_PO){
        if(msg.sender == supplier || poList[msg.sender].length == 0) revert();
        for( unit i = 0; i < poList[msg.sender].length; i++){
-           if(poList[msg.sender][i] == p){
-               delete poList[msg.sender][i];
+           if(poList[msg.sender][i].productInfo.id == productID && poList[msg.sender][i].productInfo.price == price){
+               poList[msg.sender][i].buyerStatus = WITHDRAW_PO;
            }
        }
    }
 
    function payment(product p) validBuyerPhase(buyerPhase.FREEZE_PO){
        if(msg.sender == supplier || poList[msg.sender].length == 0) revert();
+       for( unit i = 0; i < poList[msg.sender].length; i++){
+           if(poList[msg.sender][i].productInfo.id == productID && poList[msg.sender][i].productInfo.price == price){
+               poList[msg.sender][i].buyerStatus = FREEZE_PO;
+           }
+       }
    }
 }
