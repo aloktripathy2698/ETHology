@@ -96,6 +96,6 @@ contract Ethology {
    }
 
    function payment(product p) validBuyerPhase(buyerPhase.FREEZE_PO){
-       if(msg.sender != supplier) revert();
+       if(msg.sender == supplier || poList[msg.sender].length == 0) revert();
    }
 }
