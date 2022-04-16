@@ -12,7 +12,8 @@
     "sentiment_score": 0.5,
     "verfied": true,
     "poi_name": "ABC Medical Equipments",
-    "poi_id": 123456789
+    "poi_id": 123456789,
+    "price": 10
   },
   {
     "id": 2,
@@ -27,6 +28,7 @@
     "sentiment_score": 0.5,
     "verfied": true,
     "poi_name": "ABC Medical Equipments",
-    "poi_id": 12345678
+    "poi_id": 12345678,
+    "price": 20
   }
 ]

@@ -23,6 +23,15 @@ const getSearchResults = async (props: ISearchRequest) => {
   //return { data: response.data.data, count: response.data.total_data };
 };
 
+const getLocalDbData = async () => {
+  const url = SEARCH_ENDPOINT;
+  MODE_DEBUG && console.log("[getSearchResults] Looking for local DB");
+  const db = await fetch(url);
+  const data = await db.json();
+  MODE_DEBUG && console.log("[getSearchResults] data: ", data);
+  return data;
+};
+
 const getTopNPois = async (num_pois: number) => {
   const response = await axios.post(`${APP_ENDPOINT}/get-pois`, {
     num_pois,
@@ -68,4 +77,5 @@ export {
   getPOITweetCounts,
   getTweetByID,
   getTweetRepliesByID,
+  getLocalDbData,
 };

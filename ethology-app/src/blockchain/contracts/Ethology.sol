@@ -16,6 +16,8 @@ contract Ethology {
     }
 
     enum supplierPhase {
+        INIT,
+        CANCELLED,
         PROCURED,
         DELIVERED
     }
@@ -24,6 +26,7 @@ contract Ethology {
         buyerPhase buyerStatus;
         supplierPhase supplierStatus;
         product productInfo;
+        uint256 timestamp;
     }
 
     // map representing the products the client has ordered
@@ -48,9 +51,38 @@ contract Ethology {
 
     modifier onlyBuyer() {
         require(
-            msg.sender != supplier && poList[msg.sender].length > 0,
+            msg.sender != supplier,
             "Only the authorized buyer can call this function"
         );
         _;
+    }
+
+    // utility functions
+    function getSupplier() public view returns (address) {
+        return supplier;
+    }
+
+    function getBuyer() public view returns (address) {
+        return msg.sender;
+    }
+
+    function getPOList(address buyerAddress)
+        public
+        view
+        onlyBuyer
+        returns (purchaseOrder[] memory)        
+    {        
+        return poList[buyerAddress];
+    }
+
+    // function to add a product to the marketplace
+    function raisePO(uint256 id, uint256 price) public onlyBuyer {
+        purchaseOrder memory po = purchaseOrder(
+            buyerPhase.RAISE_PO,
+            supplierPhase.INIT,
+            product(id, price),
+            block.timestamp
+        );
+        poList[msg.sender].push(po);
     }
 }

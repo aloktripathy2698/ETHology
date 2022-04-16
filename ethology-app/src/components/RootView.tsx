@@ -20,6 +20,8 @@ import { useLocation, useNavigate } from "react-router";
 import { createPOIArr, getFilterString } from "./utils";
 import { Link } from "react-router-dom";
 import { getTopNPois } from "../services/search";
+import { useSnackbar } from "notistack";
+import { APP_NAME, LABEL_DASHBOARD } from "./constants";
 
 const RootView = (props: IRootView) => {
   const hideFilter = props.hideFilter;
@@ -31,6 +33,17 @@ const RootView = (props: IRootView) => {
   });
   const navigate = useNavigate();
   const { search } = useLocation();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleAccountChange = async (accounts: string[]) => {
+    console.log("Metamask account changed! ", accounts[0]);
+    enqueueSnackbar(`Welcome ${accounts[0]}`, {
+      variant: "success", // one of: 'error', 'warning', 'info', 'success'
+      autoHideDuration: 3000, // ms
+    });
+  };
+  (window as any).ethereum.on("accountsChanged", handleAccountChange);
 
   const handleFilterChange = (
     filterName: string,
@@ -80,7 +93,7 @@ const RootView = (props: IRootView) => {
             <Typography variant="h6">
               <Tooltip title="Back to home page">
                 <Link to="/" style={{ textDecoration: "none", color: "white" }}>
-                  HATS Search
+                  {APP_NAME}
                 </Link>
               </Tooltip>
             </Typography>
@@ -95,10 +108,10 @@ const RootView = (props: IRootView) => {
                 <Typography variant="h6">
                   <Tooltip title="View charts and visualizations">
                     <Link
-                      to="/insights"
+                      to="/dashboard"
                       style={{ textDecoration: "none", color: "white" }}
                     >
-                      Insights
+                      {LABEL_DASHBOARD}
                     </Link>
                   </Tooltip>
                 </Typography>
@@ -106,7 +119,10 @@ const RootView = (props: IRootView) => {
               <Button
                 variant="text"
                 aria-label="menu"
-                sx={{ color: "white" , display: hideFilter ? "none" : "inherit"}}
+                sx={{
+                  color: "white",
+                  display: hideFilter ? "none" : "inherit",
+                }}
                 onClick={filterClickHandler}
               >
                 <FilterAltRoundedIcon />

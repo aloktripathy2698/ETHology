@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ISearchResultDetails } from "../../interfaces/interface";
 import { getTweetRepliesByID } from "../../services/search";
+import { PRODUCT_STATUS_LABEL } from "../constants";
 import SearchResultSkeleton from "../SearchResultSkeleton";
 import NoResults from "./NoResults";
 import SearchResult from "./SearchResult";
@@ -10,14 +11,14 @@ import SearchResult from "./SearchResult";
 const SearchResultReplies = (props: ISearchResultDetails) => {
   const [params] = useSearchParams();
   const poiName = (params.get("poi") as string) ?? "";
-  const tweetId = (params.get("id") as string) ?? "";
+  const productId = (params.get("id") as string) ?? "";
   const [replies, setReplies] = React.useState<Array<Record<string, any>>>([]);
   const [loading, setLoading] = React.useState(false);
-  console.log("SearchResultReplies", tweetId);
+  console.log("SearchResultReplies", productId);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getTweetRepliesByID(tweetId || "");
+      const result = await getTweetRepliesByID(productId || "");
       if (result.length > 0) {
         setReplies(result);
       } else {
@@ -28,14 +29,14 @@ const SearchResultReplies = (props: ISearchResultDetails) => {
 
     setLoading(true);
     fetchData();
-  }, [params, tweetId, poiName]);
+  }, [params, productId, poiName]);
 
   return (
     <Grid item xs={12}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="caption" fontSize={24} color="#616161">
-            Replies
+            {PRODUCT_STATUS_LABEL}
           </Typography>
         </Grid>
         <Grid item xs={12}>

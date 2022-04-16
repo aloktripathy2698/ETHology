@@ -7,7 +7,7 @@ export interface IRootView {
   root: JSX.Element;
   hideFilter?: boolean;
   viewName?: string;
-  web3?: Web3;
+  currentAccount?: string;
 }
 
 export interface ISearchField {
@@ -45,7 +45,7 @@ export interface ISearchResultResponse {
   sentiment?: string;
   mentions?: string[];
   country: string;
-  id: string;  
+  id: string;
   listing_date: string;
   listing_lang: string;
   listing_text: string;
@@ -79,6 +79,7 @@ export interface ITextAnnotation {
   id?: string;
   poi_id?: string;
   sentiment_score?: number;
+  price?: number;
 }
 
 export interface IFilterState {
@@ -116,7 +117,7 @@ export interface ICovidStatsByCountry {
 }
 
 export interface ISearchResultDetails {
-  tweetId?: string;
+  productId?: string;
   poiName?: string;
 }
 
@@ -128,4 +129,16 @@ export interface INoResultProps {
 export interface IPOIStatsProps {
   poi: string;
   country: string;
+}
+
+export interface IGenericCard {
+  children: JSX.Element;
+}
+
+export interface IDashboardProps {
+  currentAccount: string;
+}
+
+export interface IProgressStepper {
+  steps: Array<string>;
 }

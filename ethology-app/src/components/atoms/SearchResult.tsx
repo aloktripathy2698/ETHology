@@ -51,7 +51,7 @@ const SearchResult = (props: ISearchResult) => {
               ) : (
                 <Link
                   className={classes.link}
-                  to={`/search-details?id=${props.annotation.id}&poi=${props.annotation.poi_name}&country=${props.annotation.country}`}
+                  to={`/search-details?price=${props.annotation.price}&id=${props.annotation.id}&poi=${props.annotation.poi_name}&country=${props.annotation.country}`}
                   style={{
                     color: getColorBySentiment(
                       props.annotation.sentiment?.toLowerCase() || "neutral"
