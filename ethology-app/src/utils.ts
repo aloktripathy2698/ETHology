@@ -11,8 +11,8 @@ const isOwnerLoggedIn = async () => {
   );
 };
 
-const getCurrentAccount = () => {
-  return (localStorage.getItem("currentAccount") as string) || "";
+const getCurrentAccount = async () => {
+  return await (localStorage.getItem("currentAccount") as string) || "";
 };
 
 export { isOwnerLoggedIn, getCurrentAccount };

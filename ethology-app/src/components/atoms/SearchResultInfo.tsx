@@ -23,6 +23,7 @@ const SearchResultInfo = () => {
   const price: number = Number(params.get("price") as string) ?? -1;
   const [data, setData] = React.useState<Array<Record<string, any>>>([]);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [buttonLoading, setButtonLoading] = React.useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
 
   // const fetchData = async () => {
@@ -56,21 +57,25 @@ const SearchResultInfo = () => {
   }, [params, productId, poiName]);
 
   const handlePORequest = async () => {
-    const currentAccount = getCurrentAccount();
+    setButtonLoading(true);
+    const currentAccount = await getCurrentAccount();
     console.log("Current Account: ", currentAccount);
+    console.log(`values being passed id: ${productId} price: ${price}`);
     try {
-      const status = await contract.methods
-        .raisePO(productId, price)
-        .send({ from: currentAccount, gas: "1000000" });
+      // let isAlreadyRaised = await contract.methods.isPoAlreadyRaised(productId).call();
+      // console.log("isPoAlreadyRaised: ", isAlreadyRaised);
+      const status = await contract.methods.RaisePo(productId, price).send({ from: currentAccount, gas: "1000000" });
       console.log("RaisePO Status: ", status);
       enqueueSnackbar("Purchase Order Raised Successfully", {
         variant: "success",
       });
+      setButtonLoading(false);
     } catch (error) {
       const errorStr = (error as any).message;
       const message = errorStr.substr(errorStr.lastIndexOf(":") + 1).trim();
       console.log("Error: ", message);
       enqueueSnackbar(message, { variant: "error" });
+      setButtonLoading(false);
     }
   };
 
@@ -108,8 +113,13 @@ const SearchResultInfo = () => {
                       variant="contained"
                       color="primary"
                       sx={{ mt: 2 }}
+                      disabled={buttonLoading}
                     >
-                      Send Purchase Order Request
+                      {buttonLoading ? (
+                        <CircularProgress sx={{ height: 10 }} />
+                      ) : (
+                        <Typography>Send Purchase Order Request</Typography>
+                      )}
                     </Button>
                   </Grid>
                 }

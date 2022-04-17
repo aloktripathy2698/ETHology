@@ -41,23 +41,28 @@ const Dashboard = (props: IDashboardProps) => {
     setIsLoading(false);
   };
 
+  const getPOList = async () => {
+    // check the poList
+    try {
+      let list = await contract.methods.getPoBuyerAddressList().call();
+      console.log("getPoBuyerAddressList: ", list);
+      list = await contract.methods.getPoPriceList().call();
+      console.log("getPoPriceList: ", list);
+      list = await contract.methods.getPoIdList().call();
+      console.log("getPoIdList: ", list);      
+      list = await contract.methods.getPOList().call();
+      console.log("getPOList: ", list);
+    } catch (e) {
+      console.log("Error: ", e);
+    }
+  };
+
   // fetch the local data
   useEffect(() => {
     setIsLoading(true);
     fetchData();
     fetchOwnerInfo();
-
-    // check the poList
-    try {
-      contract.methods
-        .getPOList(getCurrentAccount())
-        .call()
-        .then((poList: any) => {
-          console.log("PO List: ", poList);
-        });
-    } catch (e) {
-      console.log("Error: ", e);
-    }
+    getPOList();
   }, []);
 
   return (
