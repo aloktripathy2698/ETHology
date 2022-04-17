@@ -64,8 +64,10 @@ const ProgressStepper = (props: IProgressStepper) => {
 
       // first initiate the payment,  if the payment is successful then freeze the PO
       const status = await contract.methods.initiatePayment(id).send({
-        from: currentAccount,        
+        from: currentAccount,
+        // value: price,
         value: web3Instance.utils.toWei(price, "ether"),
+        gas: 3000000,
       });
       console.log("[handleFreeze] status: ", status);
 
@@ -76,9 +78,9 @@ const ProgressStepper = (props: IProgressStepper) => {
       setFreezeDisabled(true);
     } catch (error) {
       const errorStr = (error as any).message;
-      const message = errorStr.substr(errorStr.lastIndexOf(":") + 1).trim();
-      console.log("Error: ", message);
-      enqueueSnackbar(message, { variant: "error" });
+      // const message = errorStr.substr(errorStr.lastIndexOf(":") + 1).trim();
+      console.log("Error: ", errorStr);
+      enqueueSnackbar(errorStr, { variant: "error" });
     }
   };
 

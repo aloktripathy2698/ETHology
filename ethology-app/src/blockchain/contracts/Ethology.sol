@@ -39,14 +39,14 @@ contract Ethology {
     mapping(address => uint256) balances;
 
     // owner of the contract
-    address payable supplier;
+    address supplier;
     uint256 buyerCount;
     purchaseOrder[] buyerPO;
 
     // constructor
-    constructor() {
-        supplier = payable(msg.sender);
-        balances[msg.sender] = 200;
+    constructor() payable {
+        supplier = msg.sender;
+        payable(supplier).transfer(msg.value);
     }
 
     //  modifiers for restricted functions
@@ -79,7 +79,7 @@ contract Ethology {
         return buyerPO;
     }
 
-    function getBalance() public view onlySupplier returns (uint256)  {
+    function getBalance() public view onlySupplier returns (uint256) {
         return balances[msg.sender];
     }
 
@@ -120,12 +120,20 @@ contract Ethology {
     }
 
     // function to pay to the supplier
-    function initiatePayment(uint256 idx) public payable onlyBuyer {
+    function initiatePayment(uint256 idx)
+        public
+        payable
+        onlyBuyer
+        returns (bool)
+    {
+        require(msg.value > 1 ether, "Payment must be greater than 1 ether");
+        require(msg.value >= msg.sender.balance, "Insufficient balance");
         // get the price
         uint256 toPay = buyerPO[idx].price;
         // add an assert as well
         // send the ether to the supplier
         balances[supplier] += balances[address(this)] - toPay;
+        return true;
     }
 
     // initial function to raise the purchase order
