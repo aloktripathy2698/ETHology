@@ -64,11 +64,11 @@ const ProgressStepper = (props: IProgressStepper) => {
           const labelProps: {
             optional?: React.ReactNode;
           } = {};
-          if (isStepOptional(index)) {
-            labelProps.optional = (
-              <Typography variant="caption">Optional</Typography>
-            );
-          }
+          // if (isStepOptional(index)) {
+          //   labelProps.optional = (
+          //     <Typography variant="caption">Optional</Typography>
+          //   );
+          // }
           if (isStepSkipped(index)) {
             stepProps.completed = false;
           }
@@ -92,8 +92,8 @@ const ProgressStepper = (props: IProgressStepper) => {
       ) : (
         <React.Fragment>
           <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Button
+          <Box sx={{ display: "flex", flexDirection: "row", pt: 2, float: 'right'}}>
+            {/* <Button
               color="inherit"
               disabled={activeStep === 0}
               onClick={handleBack}
@@ -106,9 +106,9 @@ const ProgressStepper = (props: IProgressStepper) => {
               <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
                 Skip
               </Button>
-            )}
+            )} */}
             <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
+              {activeStep === steps.length - 1 ? "Finish" : "Move to next phase"}
             </Button>
           </Box>
         </React.Fragment>

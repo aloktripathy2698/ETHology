@@ -14,27 +14,16 @@ import SearchResultSkeleton from "../SearchResultSkeleton";
 import { getCurrentAccount, isOwnerLoggedIn } from "../../utils";
 import themeOptions from "../../theme/theme";
 import { contract } from "../../blockchain/load-contract-config";
+import { Box } from "@mui/system";
 
 // This component to contain list of material ui stepper components
 
 const Dashboard = (props: IDashboardProps) => {
-  // dummy data
-  const url = SEARCH_ENDPOINT;
-  const [searchResults, setSearchResults] = useState<ISearchResultResponse[]>(
-    []
-  );
+  const [poList, setPOList] = useState<Array<Record<string, string>>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
-  // const [currentAccount, setCurrentAccount] = useState<string>("");
-
-  const fetchData = async () => {
-    const rawData = await fetch(url);
-    const data: ISearchResultResponse[] = await rawData.json();
-    setSearchResults(data);
-  };
 
   const fetchOwnerInfo = async () => {
-    console.log("fetching owner info - param: ", props.currentAccount);
     const ownerInfo = await isOwnerLoggedIn();
     console.log("isOwnerLoggedIn", ownerInfo);
     setIsOwner(ownerInfo);
@@ -44,14 +33,20 @@ const Dashboard = (props: IDashboardProps) => {
   const getPOList = async () => {
     // check the poList
     try {
-      let list = await contract.methods.getPoBuyerAddressList().call();
-      console.log("getPoBuyerAddressList: ", list);
-      list = await contract.methods.getPoPriceList().call();
-      console.log("getPoPriceList: ", list);
-      list = await contract.methods.getPoIdList().call();
-      console.log("getPoIdList: ", list);      
-      list = await contract.methods.getPOList().call();
+      const isOwner = await isOwnerLoggedIn();
+      setIsOwner(isOwner);
+      const list = await contract.methods.getPOList().call();
       console.log("getPOList: ", list);
+      const currentAccount = await getCurrentAccount();
+      console.log("[getPOList] currentAccount: ", currentAccount);
+      if (isOwner) setPOList(list);
+      else {
+        const filteredList = list.filter((item: Record<string, string>) => {
+          return item.buyer.toLowerCase() === currentAccount.toLowerCase();
+        });
+        console.log("filteredList: ", filteredList);
+        setPOList(filteredList);
+      }
     } catch (e) {
       console.log("Error: ", e);
     }
@@ -60,7 +55,6 @@ const Dashboard = (props: IDashboardProps) => {
   // fetch the local data
   useEffect(() => {
     setIsLoading(true);
-    fetchData();
     fetchOwnerInfo();
     getPOList();
   }, []);
@@ -80,15 +74,98 @@ const Dashboard = (props: IDashboardProps) => {
             <SearchResultSkeleton />
           </Grid>
         ))
-      ) : searchResults.length > 0 ? (
-        searchResults.map((searchResult: any) => (
+      ) : poList.length > 0 ? (
+        poList.map((searchResult: any) => (
           <Grid item key={searchResult.id} xs={12} sx={{ width: "100%" }}>
             {
               <GenericCard>
-                <Grid container direction="column" padding={2}>
-                  <ProgressStepper
-                    steps={["Approval", "Procurement", "Delivery"]}
-                  />
+                <Grid container direction="column" padding={2} spacing={4}>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="h1"
+                      sx={{ fontWeight: "bold", fontSize: 21, opacity: 0.5 }}
+                    >
+                      Basic Info
+                    </Typography>
+                    <Grid container direction="row" spacing={2}>
+                      <Grid item>
+                        <Typography
+                          variant="caption"
+                          fontWeight={600}
+                          color="#616161"
+                        >
+                          Buyer Address:{" "}
+                        </Typography>
+                        <Typography variant="caption">
+                          {searchResult.buyer || "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography
+                          variant="caption"
+                          fontWeight={600}
+                          color="#616161"
+                        >
+                          Product ID:{" "}
+                        </Typography>
+                        <Typography variant="caption">
+                          {searchResult.id || "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography
+                          variant="caption"
+                          fontWeight={600}
+                          color="#616161"
+                        >
+                          Price:{" "}
+                        </Typography>
+                        <Typography variant="caption">
+                          {searchResult.price || "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography
+                          variant="caption"
+                          fontWeight={600}
+                          color="#616161"
+                        >
+                          Supplier Phase:{" "}
+                        </Typography>
+                        <Typography variant="caption">
+                          {searchResult.supplierStatus || "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Typography
+                          variant="caption"
+                          fontWeight={600}
+                          color="#616161"
+                        >
+                          Buyer Phase:{" "}
+                        </Typography>
+                        <Typography variant="caption">
+                          {searchResult.buyerStatus || "N/A"}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="h2"
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: 21,
+                        opacity: 0.5,
+                        mb: 1,
+                      }}
+                    >
+                      Update Phases
+                    </Typography>
+                    <ProgressStepper
+                      steps={["Approval", "Procurement", "Delivery"]}
+                    />
+                  </Grid>
                 </Grid>
               </GenericCard>
             }

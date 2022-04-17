@@ -11,8 +11,14 @@ const isOwnerLoggedIn = async () => {
   );
 };
 
-const getCurrentAccount = async () => {
-  return await (localStorage.getItem("currentAccount") as string) || "";
+const getOwnerAccount = async () => {
+  const owner: string = await contract.methods.getSupplier().call();
+  console.log("[Utils] Owner from SC: ", owner);
+  return owner;
 };
 
-export { isOwnerLoggedIn, getCurrentAccount };
+const getCurrentAccount = async () => {
+  return (await (localStorage.getItem("currentAccount") as string)) || "";
+};
+
+export { isOwnerLoggedIn, getCurrentAccount, getOwnerAccount };

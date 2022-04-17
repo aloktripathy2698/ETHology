@@ -10,7 +10,7 @@ import {
   getSearchResults,
   getTweetByID,
 } from "../../services/search";
-import { getCurrentAccount } from "../../utils";
+import { getCurrentAccount, getOwnerAccount } from "../../utils";
 import { PRODUCT_DETAILS_LABEL } from "../constants";
 import SearchResultSkeleton from "../SearchResultSkeleton";
 import NoResults from "./NoResults";
@@ -60,11 +60,11 @@ const SearchResultInfo = () => {
     setButtonLoading(true);
     const currentAccount = await getCurrentAccount();
     console.log("Current Account: ", currentAccount);
-    console.log(`values being passed id: ${productId} price: ${price}`);
+    // const ownerAccount = await getOwnerAccount();
     try {
       // let isAlreadyRaised = await contract.methods.isPoAlreadyRaised(productId).call();
       // console.log("isPoAlreadyRaised: ", isAlreadyRaised);
-      const status = await contract.methods.RaisePo(productId, price).send({ from: currentAccount, gas: "1000000" });
+      const status = await contract.methods.raisePo(productId, price).send({ from: currentAccount, gas: "1000000" });      
       console.log("RaisePO Status: ", status);
       enqueueSnackbar("Purchase Order Raised Successfully", {
         variant: "success",
