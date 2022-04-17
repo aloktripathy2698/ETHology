@@ -3,34 +3,26 @@ import React from "react";
 import { ITextAnnotation } from "../../interfaces/interface";
 
 const TextAnnotation = (props: ITextAnnotation) => {
-  const { sentiment, country, time, poi_name, sentiment_score } = props;
+  const { availability, country, manufac_name } = props;
   return (
     <Grid container direction="row" spacing={2}>
       <Grid item>
         <Typography variant="caption" fontWeight={600} color="#616161">
-          POI Name:{" "}
+          Manufacturer:{" "}
         </Typography>
-        <Typography variant="caption">{poi_name || "N/A"}</Typography>
+        <Typography variant="caption">{manufac_name || "N/A"}</Typography>
       </Grid>
       <Grid item>
         <Typography variant="caption" fontWeight={600} color="#616161">
-          Sentiment:{" "}
+          Availability:{" "}
         </Typography>
-        <Typography variant="caption">{sentiment || "N/A"}</Typography>
+        <Typography variant="caption">{availability || "N/A"}</Typography>
       </Grid>
       <Grid item>
         <Typography variant="caption" fontWeight={600} color="#616161">
           Country:{" "}
         </Typography>
         <Typography variant="caption">{country|| "N/A"}</Typography>
-      </Grid>
-      <Grid item>
-        <Typography variant="caption" fontWeight={600} color="#616161">
-          Time:{" "}
-        </Typography>
-        <Typography variant="caption">
-          {new Date(time as string).toUTCString() || "N/A"}
-        </Typography>
       </Grid>
     </Grid>
   );

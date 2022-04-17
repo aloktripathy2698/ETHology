@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import SearchField from "./atoms/SearchField";
-import logo from "../assets/hats-logo-new.png";
+import logo from "../assets/ethology-logo.png";
 
 const SearchHome = () => {
   const [value, setValue] = useState("");
@@ -25,12 +25,12 @@ const SearchHome = () => {
         alignContent: "flex-start",
       }}
     >
-      <Grid container sx={{ marginTop: "17vh", marginLeft: "15vw" }}>
+      <Grid container sx={{ marginTop: "0vh", marginLeft: "15vw" }}>
         <Grid item>
           <img
             src={logo}
             alt="logo"
-            style={{ height: "15rem", width: "25rem" }}
+            style={{ height: "35rem", width: "35rem" }}
           />
         </Grid>
       </Grid>
@@ -39,7 +39,7 @@ const SearchHome = () => {
         spacing={1}
         direction="row"
         alignItems="center"
-        sx={{ marginBottom: "30vh" }}
+        sx={{ mb: "10vh" , mt: "-10vh"}}
       >
         <Grid item xs={6}>
           <FormControl fullWidth>

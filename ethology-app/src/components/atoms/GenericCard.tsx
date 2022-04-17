@@ -3,11 +3,7 @@
 import React from "react";
 import {
   Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  Stack,
-  Badge,
+  CardContent,  
 } from "@mui/material";
 
 import { IGenericCard } from "../../interfaces/interface";

@@ -25,7 +25,7 @@ export interface ISearchResult {
   title: string;
   subtitle: string;
   annotation: ITextAnnotation;
-  routeToTwitter?: boolean;
+  routeToWeb?: boolean;
 }
 
 export interface IPaginate {
@@ -41,8 +41,8 @@ export interface IPaginate {
 
 export interface ISearchResultResponse {
   _version_?: string;
-  poi_name?: string;
-  sentiment?: string;
+  manufac_name?: string;
+  availability?: string;
   mentions?: string[];
   country: string;
   id: string;
@@ -74,30 +74,12 @@ export interface ITextAnnotation {
   country?: string;
   time?: string;
   verified?: boolean;
-  poi_name?: string;
-  sentiment?: string;
+  manufac_name?: string;
+  availability?: string;
   id?: string;
-  poi_id?: string;
+  manufac_id?: string;
   sentiment_score?: number;
   price?: number;
-}
-
-export interface IFilterState {
-  poi: Array<{
-    name: string;
-    value: string;
-    checked: boolean;
-  }>;
-  lang: Array<{
-    name: string;
-    value: string;
-    checked: boolean;
-  }>;
-  country: Array<{
-    name: string;
-    value: string;
-    checked: boolean;
-  }>;
 }
 
 export interface ISearchRequest {
@@ -106,16 +88,6 @@ export interface ISearchRequest {
   page_number: number;
   rows_per_page: number;
 }
-
-export interface IPOITweetCount {
-  poi: string;
-  count: number;
-}
-
-export interface ICovidStatsByCountry {
-  country: string;
-}
-
 export interface ISearchResultDetails {
   productId?: string;
   poiName?: string;

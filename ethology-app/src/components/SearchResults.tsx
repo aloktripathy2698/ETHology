@@ -130,7 +130,7 @@ const SearchResults = () => {
                 annotation={searchResult || "N/A"}
                 subtitle={searchResult.listing_date || "N/A"}
                 title={searchResult.listing_text || "Title not available"}
-                routeToTwitter={false}
+                routeToWeb={false}
               />
             }
           </Grid>

@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import { IProgressStepper } from "../../interfaces/interface";
 import { useSnackbar } from "notistack";
 import { contract, web3Instance } from "../../blockchain/load-contract-config";
-import { getCurrentAccount } from "../../utils";
+import { getCurrentAccount, getOwnerAccount } from "../../utils";
 
 const ProgressStepper = (props: IProgressStepper) => {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -61,13 +61,27 @@ const ProgressStepper = (props: IProgressStepper) => {
       console.log("Current Account: ", currentAccount);
       const buyerBalance = await contract.methods.getBuyerBalance().call();
       console.log("Buyer Balance: ", buyerBalance);
+      const ownerAccount = await getOwnerAccount();
+      console.log("Owner Account: ", ownerAccount);
 
       // first initiate the payment,  if the payment is successful then freeze the PO
-      const status = await contract.methods.initiatePayment(id).send({
-        from: currentAccount,
-        // value: price,
-        value: web3Instance.utils.toWei(price, "ether"),
-        gas: 3000000,
+      // const status = await contract.methods.initiatePayment(id).send({
+      //   from: currentAccount,
+      //   // value: price,
+      //   value: web3Instance.utils.toWei("99", "ether"),
+      //   gas: 3000000,
+      // });
+      // console.log("[handleFreeze] status: ", status);
+      const status = await (window as any).ethereum.request({
+        method: "eth_sendTransaction",
+        params: [
+          {
+            from: currentAccount,
+            to: ownerAccount,
+            value: web3Instance.utils.toWei("0.01", "ether"),
+            gas: "100000",
+          },
+        ],
       });
       console.log("[handleFreeze] status: ", status);
 
@@ -115,9 +129,7 @@ const ProgressStepper = (props: IProgressStepper) => {
     }
 
     // if mode is buyer show the buttons
-    if (buyerStatus === "1") {
-      setFreezeDisabled(true);
-    } else if (buyerStatus === "2") {
+    if (buyerStatus === "1" || buyerStatus === "2") {
       setFreezeDisabled(true);
       setWithdrawDisabled(true);
     }

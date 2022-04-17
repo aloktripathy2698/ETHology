@@ -18,12 +18,11 @@
  *
  */
 
-const HDWalletProvider = require("@truffle/hdwallet-provider");
+// const HDWalletProvider = require("@truffle/hdwallet-provider");
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
-const mnemonic =
-  "embody fortune student core cricket man swarm dad patient flash knock prison";
+// const mnemonic = "embody fortune student core cricket man swarm dad patient flash knock prison";
 
 module.exports = {
   /**
@@ -47,9 +46,9 @@ module.exports = {
       host: "127.0.0.1", // Localhost (default: none)
       port: 7545, // Standard Ethereum port (default: none)
       network_id: "*", // Any network (default: none)
-      provider: () => {
-        return new HDWalletProvider(mnemonic, "http://127.0.0.1:7545/");
-      },
+      // provider: () => {
+      //   return new HDWalletProvider(mnemonic, "http://127.0.0.1:7545/");
+      // },
       gas: 6000000,
     },
     // Another network with more advanced options...

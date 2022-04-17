@@ -1,20 +1,13 @@
 // This is the file for the dashboard for both the admin and the user
 import { Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import {
-  IDashboardProps,
-  ISearchResultResponse,
-} from "../../interfaces/interface";
-import { SEARCH_ENDPOINT } from "../../services/constants";
+import { IDashboardProps } from "../../interfaces/interface";
 import GenericCard from "../atoms/GenericCard";
 import ProgressStepper from "../atoms/ProgressStepper";
 import NoResults from "../atoms/NoResults";
-import SearchResult from "../atoms/SearchResult";
 import SearchResultSkeleton from "../SearchResultSkeleton";
 import { getCurrentAccount, isOwnerLoggedIn } from "../../utils";
-import themeOptions from "../../theme/theme";
 import { contract } from "../../blockchain/load-contract-config";
-import { Box } from "@mui/system";
 import { BUYER_PHASE_MAPPING, SUPPLIER_PHASE_MAPPING } from "../constants";
 import { useSnackbar } from "notistack";
 

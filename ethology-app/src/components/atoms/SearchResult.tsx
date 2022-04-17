@@ -3,16 +3,14 @@ import {
   CardMedia,
   CardContent,
   Typography,
-  Stack,
-  Badge,
+  Stack,  
 } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
-import { SEARCH_IMAGE_URL } from "../../constants";
 import { ISearchResult } from "../../interfaces/interface";
 import TextAnnotation from "../molecules/TextAnnotation";
 import { cardStyles } from "../styles/card-styles";
-import { getColorBySentiment } from "../utils";
+import { getColorByAvailability } from "../utils";
 import { GoVerified } from "react-icons/go";
 import { Box } from "@mui/system";
 
@@ -21,28 +19,19 @@ const SearchResult = (props: ISearchResult) => {
 
   return (
     <Card className={classes.root}>
-      <CardMedia image={SEARCH_IMAGE_URL} />
+      <CardMedia />
       <CardContent>
         <Stack spacing={1}>
-          <Typography variant="h6" className={classes.title}>
-            {/* <Link
-              className={classes.link}
-              to={""}
-              style={{
-                color: getColorBySentiment(
-                  props.annotation.sentiment?.toLowerCase() || "neutral"
-                ),
-              }}
-            > */}
-            {props.annotation.poi_id ? (
-              props.routeToTwitter ? (
+          <Typography variant="h6" className={classes.title}>            
+            {props.annotation.manufac_id ? (
+              props.routeToWeb ? (
                 <a
                   style={{
-                    color: getColorBySentiment(
-                      props.annotation.sentiment?.toLowerCase() || "neutral"
+                    color: getColorByAvailability(
+                      props.annotation.availability?.toLowerCase() || "neutral"
                     ),
                   }}
-                  href={`https://twitter.com/${props.annotation.poi_id}/status/${props.annotation.id}`}
+                  href={`https://twitter.com/${props.annotation.manufac_id}/status/${props.annotation.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -51,10 +40,10 @@ const SearchResult = (props: ISearchResult) => {
               ) : (
                 <Link
                   className={classes.link}
-                  to={`/search-details?price=${props.annotation.price}&id=${props.annotation.id}&poi=${props.annotation.poi_name}&country=${props.annotation.country}`}
+                  to={`/search-details?price=${props.annotation.price}&id=${props.annotation.id}&poi=${props.annotation.manufac_name}&country=${props.annotation.country}`}
                   style={{
-                    color: getColorBySentiment(
-                      props.annotation.sentiment?.toLowerCase() || "neutral"
+                    color: getColorByAvailability(
+                      props.annotation.availability?.toLowerCase() || "neutral"
                     ),
                   }}
                 >
@@ -64,8 +53,8 @@ const SearchResult = (props: ISearchResult) => {
             ) : (
               <Box
                 style={{
-                  color: getColorBySentiment(
-                    props.annotation.sentiment?.toLowerCase() || "neutral"
+                  color: getColorByAvailability(
+                    props.annotation.availability?.toLowerCase() || "neutral"
                   ),
                 }}
               >
@@ -87,9 +76,9 @@ const SearchResult = (props: ISearchResult) => {
             <TextAnnotation
               country={props.annotation.country}
               verified={props.annotation.verified}
-              poi_name={props.annotation.poi_name}
+              manufac_name={props.annotation.manufac_name}
               time={props.subtitle}
-              sentiment={props.annotation.sentiment}
+              availability={props.annotation.availability}
               sentiment_score={props.annotation.sentiment_score}
             />
           </Typography>

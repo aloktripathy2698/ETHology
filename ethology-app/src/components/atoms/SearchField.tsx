@@ -6,7 +6,7 @@ import { ISearchField } from "../../interfaces/interface";
 
 const SearchField = (props: ISearchField) => {
   const [query, setQuery] = React.useState("");
-  const { value, handleChange } = props;
+  const { handleChange } = props;
   const navigate = useNavigate();
 
   return (

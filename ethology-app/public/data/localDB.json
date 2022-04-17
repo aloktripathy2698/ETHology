@@ -8,11 +8,11 @@
     "time": "12th April, 2022 5.00PM",
     "listing_lang": "en",
     "listing_text": "Tender for ordering surgical masks and other medical equipment",
-    "sentiment": "positive",
+    "availability": "positive",
     "sentiment_score": 0.5,
     "verfied": true,
-    "poi_name": "ABC Medical Equipments",
-    "poi_id": 123456789,
+    "manufac_name": "ABC Medical Equipments",
+    "manufac_id": 123456789,
     "price": 10
   },
   {
@@ -24,11 +24,11 @@
     "time": "12th April, 2022 5.00PM",
     "listing_lang": "en",
     "listing_text": "Tender for ordering surgical masks and other medical equipment",
-    "sentiment": "negative",
+    "availability": "negative",
     "sentiment_score": 0.5,
     "verfied": true,
-    "poi_name": "ABC Medical Equipments",
-    "poi_id": 12345678,
+    "manufac_name": "ABC Medical Equipments",
+    "manufac_id": 12345678,
     "price": 20
   }
 ]

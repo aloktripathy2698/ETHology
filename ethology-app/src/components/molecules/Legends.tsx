@@ -1,7 +1,7 @@
 import { Badge, Grid, Typography } from "@mui/material";
 import React from "react";
 import { GoVerified } from "react-icons/go";
-import { getColorBySentiment } from "../utils";
+import { getColorByAvailability } from "../utils";
 
 const Legends = () => {
   return (
@@ -13,15 +13,15 @@ const Legends = () => {
               variant="dot"
               sx={{
                 "& .MuiBadge-badge": {
-                  color: getColorBySentiment("negative"),
-                  backgroundColor: getColorBySentiment("negative"),
+                  color: getColorByAvailability("negative"),
+                  backgroundColor: getColorByAvailability("negative"),
                 },
               }}
             />
           </Grid>
           <Grid item>
             <Typography variant="caption" fontWeight="bold" color="#616161">
-              Negative
+              Finished
             </Typography>
           </Grid>
         </Grid>
@@ -33,15 +33,15 @@ const Legends = () => {
               variant="dot"
               sx={{
                 "& .MuiBadge-badge": {
-                  color: getColorBySentiment("neutral"),
-                  backgroundColor: getColorBySentiment("neutral"),
+                  color: getColorByAvailability("neutral"),
+                  backgroundColor: getColorByAvailability("neutral"),
                 },
               }}
             />
           </Grid>
           <Grid item>
             <Typography variant="caption" fontWeight="bold" color="#616161">
-              Neutral
+              Finishing
             </Typography>
           </Grid>
         </Grid>
@@ -53,15 +53,15 @@ const Legends = () => {
               variant="dot"
               sx={{
                 "& .MuiBadge-badge": {
-                  color: getColorBySentiment("positive"),
-                  backgroundColor: getColorBySentiment("positive"),
+                  color: getColorByAvailability("positive"),
+                  backgroundColor: getColorByAvailability("positive"),
                 },
               }}
             />
           </Grid>
           <Grid item>
             <Typography variant="caption" fontWeight="bold" color="#616161">
-              Positive
+              Available
             </Typography>
           </Grid>
         </Grid>

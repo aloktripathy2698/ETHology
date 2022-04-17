@@ -1,16 +1,10 @@
-import { Co2Sharp } from "@mui/icons-material";
 import { Button, CircularProgress, Grid, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { contract } from "../../blockchain/load-contract-config";
-import { ISearchResultDetails } from "../../interfaces/interface";
-import {
-  getLocalDbData,
-  getSearchResults,
-  getTweetByID,
-} from "../../services/search";
-import { getCurrentAccount, getOwnerAccount } from "../../utils";
+import { getLocalDbData } from "../../services/search";
+import { getCurrentAccount } from "../../utils";
 import { PRODUCT_DETAILS_LABEL } from "../constants";
 import SearchResultSkeleton from "../SearchResultSkeleton";
 import NoResults from "./NoResults";
@@ -25,16 +19,6 @@ const SearchResultInfo = () => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [buttonLoading, setButtonLoading] = React.useState<boolean>(false);
   const { enqueueSnackbar } = useSnackbar();
-
-  // const fetchData = async () => {
-  //   const response = await getTweetByID(productId || "");
-  //   if (response.length > 0) {
-  //     setData(response);
-  //   } else {
-  //     setData([]);
-  //   }
-  //   setLoading(false);
-  // };
 
   const fetchData = async () => {
     // get data from the local db
@@ -64,7 +48,9 @@ const SearchResultInfo = () => {
     try {
       // let isAlreadyRaised = await contract.methods.isPoAlreadyRaised(productId).call();
       // console.log("isPoAlreadyRaised: ", isAlreadyRaised);
-      const status = await contract.methods.raisePo(productId, price).send({ from: currentAccount, gas: "1000000" });      
+      const status = await contract.methods
+        .raisePo(productId, price)
+        .send({ from: currentAccount, gas: "1000000" });
       console.log("RaisePO Status: ", status);
       enqueueSnackbar("Purchase Order Raised Successfully", {
         variant: "success",
