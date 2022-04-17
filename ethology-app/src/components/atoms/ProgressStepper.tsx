@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { IProgressStepper } from "../../interfaces/interface";
 import { useSnackbar } from "notistack";
-import { contract } from "../../blockchain/load-contract-config";
+import { contract, web3Instance } from "../../blockchain/load-contract-config";
 import { getCurrentAccount } from "../../utils";
 
 const ProgressStepper = (props: IProgressStepper) => {
@@ -17,12 +17,18 @@ const ProgressStepper = (props: IProgressStepper) => {
   const [nextDisabled, setNextDisabled] = React.useState(false);
   const [withdrawDisabled, setWithdrawDisabled] = React.useState(false);
   const [freezeDisabled, setFreezeDisabled] = React.useState(false);
-  const { id, steps, account, buyerStatus, supplierStatus, isOwner } = props;
+  const { id, steps, account, buyerStatus, supplierStatus, isOwner, price } =
+    props;
   const { enqueueSnackbar } = useSnackbar();
 
   const handleNext = async () => {
+    if (supplierStatus === "2") {
+      setNextDisabled(true);
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      return;
+    }
     // check if user status is freeze or not yet
-    if (buyerStatus !== "2") {
+    if (buyerStatus !== "1") {
       enqueueSnackbar("Buyer has not frozen the PO yet", {
         variant: "warning",
       });
@@ -53,6 +59,16 @@ const ProgressStepper = (props: IProgressStepper) => {
     try {
       const currentAccount = await getCurrentAccount();
       console.log("Current Account: ", currentAccount);
+      const buyerBalance = await contract.methods.getBuyerBalance().call();
+      console.log("Buyer Balance: ", buyerBalance);
+
+      // first initiate the payment,  if the payment is successful then freeze the PO
+      const status = await contract.methods.initiatePayment(id).send({
+        from: currentAccount,        
+        value: web3Instance.utils.toWei(price, "ether"),
+      });
+      console.log("[handleFreeze] status: ", status);
+
       const result = await contract.methods
         .updateBuyerPhase("1", id, account)
         .send({ from: currentAccount, gas: "1000000" });
@@ -76,6 +92,7 @@ const ProgressStepper = (props: IProgressStepper) => {
         .send({ from: currentAccount, gas: "1000000" });
       console.log("result: ", result);
       setWithdrawDisabled(true);
+      setFreezeDisabled(true);
     } catch (error) {
       const errorStr = (error as any).message;
       const message = errorStr.substr(errorStr.lastIndexOf(":") + 1).trim();

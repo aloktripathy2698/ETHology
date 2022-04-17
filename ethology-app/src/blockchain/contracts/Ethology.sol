@@ -29,8 +29,14 @@ contract Ethology {
         address buyer;
     }
 
+    struct balance {
+        address addr;
+        uint256 balance;
+    }
+
     // map representing the products the client has ordered
     mapping(address => purchaseOrder[]) poList;
+    mapping(address => uint256) balances;
 
     // owner of the contract
     address payable supplier;
@@ -40,6 +46,7 @@ contract Ethology {
     // constructor
     constructor() {
         supplier = payable(msg.sender);
+        balances[msg.sender] = 200;
     }
 
     //  modifiers for restricted functions
@@ -72,6 +79,10 @@ contract Ethology {
         return buyerPO;
     }
 
+    function getBalance() public view onlySupplier returns (uint256)  {
+        return balances[msg.sender];
+    }
+
     function updateBuyerPhase(
         buyerPhase phase,
         uint256 id,
@@ -81,9 +92,6 @@ contract Ethology {
         for (uint256 i = 0; i < buyerPO.length; i++) {
             // if the id matches
             if (buyerPO[i].id == id && buyerPO[i].buyer == addr) {
-                if (phase == buyerPhase.FREEZE_PO) {
-                    _payToSupplier(i);
-                }
                 // update the phase
                 buyerPO[i].buyerStatus = phase;
                 break;
@@ -107,12 +115,17 @@ contract Ethology {
         }
     }
 
+    function getBuyerBalance() public view returns (uint256) {
+        return balances[msg.sender];
+    }
+
     // function to pay to the supplier
-    function _payToSupplier(uint256 idx) public payable onlyBuyer {
+    function initiatePayment(uint256 idx) public payable onlyBuyer {
         // get the price
-        uint256 price = buyerPO[idx].price;
+        uint256 toPay = buyerPO[idx].price;
+        // add an assert as well
         // send the ether to the supplier
-        payable(supplier).transfer(price);
+        balances[supplier] += balances[address(this)] - toPay;
     }
 
     // initial function to raise the purchase order
@@ -126,5 +139,8 @@ contract Ethology {
                 buyer: msg.sender
             })
         );
+
+        // update the balance too
+        balances[msg.sender] = 101;
     }
 }

@@ -11,22 +11,20 @@ import { Box } from "@mui/system";
 import FilterAltRoundedIcon from "@mui/icons-material/FilterAltRounded";
 import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import React, { useEffect } from "react";
 import { IFilterState, IRootView } from "../interfaces/interface";
 import FilterMenu from "./atoms/FilterMenu";
 import { FilterContext } from "../contexts/FilterContext";
 import { FILTER_OPTIONS } from "../constants";
 import { useLocation, useNavigate } from "react-router";
-import { createPOIArr, getFilterString } from "./utils";
 import { Link } from "react-router-dom";
-import { getTopNPois } from "../services/search";
 import { useSnackbar } from "notistack";
 import { APP_NAME, LABEL_DASHBOARD } from "./constants";
+import { useState } from "react";
 
 const RootView = (props: IRootView) => {
   const hideFilter = props.hideFilter;
-  const [open, setOpen] = React.useState(false);
-  const [filterState, setFilterState] = React.useState<IFilterState>({
+  const [open, setOpen] = useState(false);
+  const [filterState, setFilterState] = useState<IFilterState>({
     poi: FILTER_OPTIONS.poi,
     lang: FILTER_OPTIONS.lang,
     country: FILTER_OPTIONS.country,

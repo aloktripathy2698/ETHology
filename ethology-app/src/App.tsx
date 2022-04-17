@@ -2,7 +2,6 @@ import { ThemeProvider } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 import { useEffect, useState } from "react";
 import { Routes, Route, HashRouter } from "react-router-dom";
-import { useNavigate } from "react-router";
 import "./App.css";
 import Dashboard from "./components/molecules/Dashboard";
 import SearchResultDetails from "./components/molecules/SearchResultDetails";

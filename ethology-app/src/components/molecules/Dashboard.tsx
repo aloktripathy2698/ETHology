@@ -16,6 +16,7 @@ import themeOptions from "../../theme/theme";
 import { contract } from "../../blockchain/load-contract-config";
 import { Box } from "@mui/system";
 import { BUYER_PHASE_MAPPING, SUPPLIER_PHASE_MAPPING } from "../constants";
+import { useSnackbar } from "notistack";
 
 // This component to contain list of material ui stepper components
 
@@ -23,6 +24,8 @@ const Dashboard = (props: IDashboardProps) => {
   const [poList, setPOList] = useState<Array<Record<string, string>>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const { enqueueSnackbar } = useSnackbar();
 
   const fetchOwnerInfo = async () => {
     const ownerInfo = await isOwnerLoggedIn();
@@ -34,22 +37,42 @@ const Dashboard = (props: IDashboardProps) => {
   const getPOList = async () => {
     // check the poList
     try {
+      setIsLoading(true);
       const isOwner = await isOwnerLoggedIn();
       setIsOwner(isOwner);
       const list = await contract.methods.getPOList().call();
       console.log("getPOList: ", list);
       const currentAccount = await getCurrentAccount();
       console.log("[getPOList] currentAccount: ", currentAccount);
-      if (isOwner) setPOList(list);
-      else {
+      if (isOwner) {
+        setPOList(list);
+        fetchBalance();
+      } else {
         const filteredList = list.filter((item: Record<string, string>) => {
           return item.buyer.toLowerCase() === currentAccount.toLowerCase();
         });
         console.log("filteredList: ", filteredList);
         setPOList(filteredList);
       }
-    } catch (e) {
-      console.log("Error: ", e);
+    } catch (error) {
+      setIsLoading(false);
+      const errorStr = (error as any).message;
+      const message = errorStr.substr(errorStr.lastIndexOf(":") + 1).trim();
+      console.log("Error: ", message);
+      enqueueSnackbar(message, { variant: "error" });
+    }
+  };
+
+  const fetchBalance = async () => {
+    try {
+      const balance = await contract.methods.getBalance().call();
+      console.log("[fetchBalance] balance: ", balance);
+      setBalance(balance);
+    } catch (error) {
+      const errorStr = (error as any).message;
+      const message = errorStr.substr(errorStr.lastIndexOf(":") + 1).trim();
+      console.log("Error: ", message);
+      enqueueSnackbar(message, { variant: "error" });
     }
   };
 
@@ -69,6 +92,11 @@ const Dashboard = (props: IDashboardProps) => {
       >
         {isOwner ? "Admin Dashboard" : "User Dashboard"}
       </Typography>
+      {isOwner && (
+        <Typography variant="h6" component="h6" sx={{ fontWeight: "bold" }}>
+          Balance: {balance}
+        </Typography>
+      )}
       {isLoading ? (
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
           <Grid item key={i} xs={12} sx={{ width: "100%" }}>
@@ -170,6 +198,7 @@ const Dashboard = (props: IDashboardProps) => {
                       steps={["Approval", "Procurement", "Delivery"]}
                       isOwner={isOwner}
                       id={searchResult.id}
+                      price={searchResult.price}
                       account={searchResult.buyer}
                       buyerStatus={searchResult.buyerStatus}
                       supplierStatus={searchResult.supplierStatus}
