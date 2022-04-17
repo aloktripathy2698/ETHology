@@ -141,4 +141,9 @@ export interface IDashboardProps {
 
 export interface IProgressStepper {
   steps: Array<string>;
+  isOwner: boolean;
+  id: string;
+  account: string;
+  buyerStatus: string;
+  supplierStatus: string;
 }

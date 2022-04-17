@@ -15,6 +15,7 @@ import { getCurrentAccount, isOwnerLoggedIn } from "../../utils";
 import themeOptions from "../../theme/theme";
 import { contract } from "../../blockchain/load-contract-config";
 import { Box } from "@mui/system";
+import { BUYER_PHASE_MAPPING, SUPPLIER_PHASE_MAPPING } from "../constants";
 
 // This component to contain list of material ui stepper components
 
@@ -75,7 +76,7 @@ const Dashboard = (props: IDashboardProps) => {
           </Grid>
         ))
       ) : poList.length > 0 ? (
-        poList.map((searchResult: any) => (
+        poList.map((searchResult: Record<string, string>) => (
           <Grid item key={searchResult.id} xs={12} sx={{ width: "100%" }}>
             {
               <GenericCard>
@@ -133,7 +134,9 @@ const Dashboard = (props: IDashboardProps) => {
                           Supplier Phase:{" "}
                         </Typography>
                         <Typography variant="caption">
-                          {searchResult.supplierStatus || "N/A"}
+                          {SUPPLIER_PHASE_MAPPING[
+                            searchResult.supplierStatus
+                          ] || "N/A"}
                         </Typography>
                       </Grid>
                       <Grid item>
@@ -145,7 +148,8 @@ const Dashboard = (props: IDashboardProps) => {
                           Buyer Phase:{" "}
                         </Typography>
                         <Typography variant="caption">
-                          {searchResult.buyerStatus || "N/A"}
+                          {BUYER_PHASE_MAPPING[searchResult.buyerStatus] ||
+                            "N/A"}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -157,13 +161,18 @@ const Dashboard = (props: IDashboardProps) => {
                         fontWeight: "bold",
                         fontSize: 21,
                         opacity: 0.5,
-                        mb: 1,
+                        mb: 1.5,
                       }}
                     >
                       Update Phases
                     </Typography>
                     <ProgressStepper
                       steps={["Approval", "Procurement", "Delivery"]}
+                      isOwner={isOwner}
+                      id={searchResult.id}
+                      account={searchResult.buyer}
+                      buyerStatus={searchResult.buyerStatus}
+                      supplierStatus={searchResult.supplierStatus}
                     />
                   </Grid>
                 </Grid>

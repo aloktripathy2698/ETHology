@@ -11,13 +11,12 @@ contract Ethology {
 
     enum buyerPhase {
         RAISE_PO,
-        WITHDRAW_PO,
-        FREEZE_PO
+        FREEZE_PO,
+        WITHDRAW_PO
     }
 
     enum supplierPhase {
         INIT,
-        CANCELLED,
         PROCURED,
         DELIVERED
     }
@@ -34,18 +33,13 @@ contract Ethology {
     mapping(address => purchaseOrder[]) poList;
 
     // owner of the contract
-    address supplier;
-    address buyer;
+    address payable supplier;
     uint256 buyerCount;
     purchaseOrder[] buyerPO;
 
-    // address[] addresses;
-    // buyerPhase[] buyerPhases;
-
     // constructor
     constructor() {
-        supplier = msg.sender;
-        buyer = msg.sender;
+        supplier = payable(msg.sender);
     }
 
     //  modifiers for restricted functions
@@ -78,7 +72,50 @@ contract Ethology {
         return buyerPO;
     }
 
-    // ideally how it should be
+    function updateBuyerPhase(
+        buyerPhase phase,
+        uint256 id,
+        address addr
+    ) public onlyBuyer {
+        // loop over the buyerPO array
+        for (uint256 i = 0; i < buyerPO.length; i++) {
+            // if the id matches
+            if (buyerPO[i].id == id && buyerPO[i].buyer == addr) {
+                if (phase == buyerPhase.FREEZE_PO) {
+                    _payToSupplier(i);
+                }
+                // update the phase
+                buyerPO[i].buyerStatus = phase;
+                break;
+            }
+        }
+    }
+
+    function updateSupplierPhase(
+        supplierPhase phase,
+        uint256 id,
+        address addr
+    ) public onlySupplier {
+        // loop over the buyerPO array
+        for (uint256 i = 0; i < buyerPO.length; i++) {
+            // if the id matches
+            if (buyerPO[i].id == id && buyerPO[i].buyer == addr) {
+                // update the phase
+                buyerPO[i].supplierStatus = phase;
+                break;
+            }
+        }
+    }
+
+    // function to pay to the supplier
+    function _payToSupplier(uint256 idx) public payable onlyBuyer {
+        // get the price
+        uint256 price = buyerPO[idx].price;
+        // send the ether to the supplier
+        payable(supplier).transfer(price);
+    }
+
+    // initial function to raise the purchase order
     function raisePo(uint256 id, uint256 price) public onlyBuyer {
         buyerPO.push(
             purchaseOrder({
