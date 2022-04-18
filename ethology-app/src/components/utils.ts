@@ -1,8 +1,8 @@
 const getColorByAvailability = (availability: string): string => {
-  if (availability === "positive") {
+  if (availability.toLowerCase() === "available") {
     return "#26a69a";
   }
-  if (availability === "negative") {
+  if (availability.toLowerCase() === "finished") {
     return "#ff3d00";
   }
   return "#ffa000";

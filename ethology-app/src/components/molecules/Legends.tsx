@@ -13,8 +13,8 @@ const Legends = () => {
               variant="dot"
               sx={{
                 "& .MuiBadge-badge": {
-                  color: getColorByAvailability("negative"),
-                  backgroundColor: getColorByAvailability("negative"),
+                  color: getColorByAvailability("Finished"),
+                  backgroundColor: getColorByAvailability("Finished"),
                 },
               }}
             />
@@ -33,8 +33,8 @@ const Legends = () => {
               variant="dot"
               sx={{
                 "& .MuiBadge-badge": {
-                  color: getColorByAvailability("neutral"),
-                  backgroundColor: getColorByAvailability("neutral"),
+                  color: getColorByAvailability("Finishing"),
+                  backgroundColor: getColorByAvailability("Finishing"),
                 },
               }}
             />
@@ -53,8 +53,8 @@ const Legends = () => {
               variant="dot"
               sx={{
                 "& .MuiBadge-badge": {
-                  color: getColorByAvailability("positive"),
-                  backgroundColor: getColorByAvailability("positive"),
+                  color: getColorByAvailability("Available"),
+                  backgroundColor: getColorByAvailability("Available"),
                 },
               }}
             />

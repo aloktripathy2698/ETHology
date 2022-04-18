@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  Stack,  
-} from "@mui/material";
+import { Card, CardMedia, CardContent, Typography, Stack } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import { ISearchResult } from "../../interfaces/interface";
@@ -22,13 +16,13 @@ const SearchResult = (props: ISearchResult) => {
       <CardMedia />
       <CardContent>
         <Stack spacing={1}>
-          <Typography variant="h6" className={classes.title}>            
+          <Typography variant="h6" className={classes.title}>
             {props.annotation.manufac_id ? (
               props.routeToWeb ? (
                 <a
                   style={{
                     color: getColorByAvailability(
-                      props.annotation.availability?.toLowerCase() || "neutral"
+                      props.annotation.availability?.toLowerCase() || "available"
                     ),
                   }}
                   href={`https://twitter.com/${props.annotation.manufac_id}/status/${props.annotation.id}`}
@@ -37,24 +31,35 @@ const SearchResult = (props: ISearchResult) => {
                 >
                   {props.title}
                 </a>
-              ) : (
+              ) : props.annotation.availability?.toLowerCase() !==
+                "finished" ? (
                 <Link
                   className={classes.link}
                   to={`/search-details?price=${props.annotation.price}&id=${props.annotation.id}&poi=${props.annotation.manufac_name}&country=${props.annotation.country}`}
                   style={{
                     color: getColorByAvailability(
-                      props.annotation.availability?.toLowerCase() || "neutral"
+                      props.annotation.availability?.toLowerCase() || "available"
                     ),
                   }}
                 >
                   {props.title}
                 </Link>
+              ) : (
+                <div
+                  style={{
+                    color: getColorByAvailability(
+                      props.annotation.availability?.toLowerCase() || "available"
+                    ),
+                  }}
+                >
+                  {props.title}
+                </div>
               )
             ) : (
               <Box
                 style={{
                   color: getColorByAvailability(
-                    props.annotation.availability?.toLowerCase() || "neutral"
+                    props.annotation.availability?.toLowerCase() || "available"
                   ),
                 }}
               >

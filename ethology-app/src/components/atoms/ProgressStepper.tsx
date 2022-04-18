@@ -22,11 +22,6 @@ const ProgressStepper = (props: IProgressStepper) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleNext = async () => {
-    if (supplierStatus === "2") {
-      setNextDisabled(true);
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      return;
-    }
     // check if user status is freeze or not yet
     if (buyerStatus !== "1") {
       enqueueSnackbar("Buyer has not frozen the PO yet", {
@@ -35,21 +30,26 @@ const ProgressStepper = (props: IProgressStepper) => {
       return;
     }
 
-    // else call the contract and update the status
-    try {
-      const currentAccount = await getCurrentAccount();
-      console.log("[handleNext] currentAccount: ", currentAccount);
-      const status = await contract.methods
-        .updateSupplierPhase(activeStep + 1 + "", id, account)
-        .send({ from: currentAccount, gas: 3000000 });
-      console.log("[handleNext] status: ", status);
-    } catch (error) {
-      const errorStr = (error as any).message;
-      const message = errorStr.substr(errorStr.lastIndexOf(":") + 1).trim();
-      console.log("Error: ", message);
-      enqueueSnackbar(message, { variant: "error" });
+    if (supplierStatus === "2") {
+      setNextDisabled(true);
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      return;
+    } else if(activeStep < 2){
+      // else call the contract and update the status
+      try {
+        const currentAccount = await getCurrentAccount();
+        console.log("[handleNext] currentAccount: ", currentAccount);
+        const status = await contract.methods
+          .updateSupplierPhase(activeStep + 1 + "", id, account)
+          .send({ from: currentAccount, gas: 3000000 });
+        console.log("[handleNext] status: ", status);
+      } catch (error) {
+        const errorStr = (error as any).message;
+        const message = errorStr.substr(errorStr.lastIndexOf(":") + 1).trim();
+        console.log("Error: ", message);
+        enqueueSnackbar(message, { variant: "error" });
+      }
     }
-
     // finally set the next step
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -72,13 +72,15 @@ const ProgressStepper = (props: IProgressStepper) => {
       //   gas: 3000000,
       // });
       // console.log("[handleFreeze] status: ", status);
+      const price_num: number = parseInt(price, 10) * 0.0001;
+      const priceInWei = web3Instance.utils.toWei(price_num + "", "ether");
       const status = await (window as any).ethereum.request({
         method: "eth_sendTransaction",
         params: [
           {
             from: currentAccount,
             to: ownerAccount,
-            value: web3Instance.utils.toWei("0.01", "ether"),
+            value: priceInWei,
             gas: "100000",
           },
         ],
@@ -90,6 +92,7 @@ const ProgressStepper = (props: IProgressStepper) => {
         .send({ from: currentAccount, gas: "1000000" });
       console.log("result: ", result);
       setFreezeDisabled(true);
+      setWithdrawDisabled(true);
     } catch (error) {
       const errorStr = (error as any).message;
       // const message = errorStr.substr(errorStr.lastIndexOf(":") + 1).trim();
@@ -119,6 +122,9 @@ const ProgressStepper = (props: IProgressStepper) => {
 
   React.useEffect(() => {
     // if mode is owner
+    if (buyerStatus === "2") {
+      setNextDisabled(true);
+    }
     if (supplierStatus === "0") {
       setActiveStep(0);
     } else if (supplierStatus === "1") {
