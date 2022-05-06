@@ -12,7 +12,7 @@ import themeOptions from "./theme/theme";
 
 function App() {
   const [currentAccount, setCurrentAccount] = useState<string>("");
-  const dashboardComponent = <SearchResultDetails />;  
+  const dashboardComponent = <SearchResultDetails />;
 
   const getOwnerAddress = async () => {
     const accounts = await (window as any).ethereum.request({
@@ -36,7 +36,7 @@ function App() {
         console.log("[APP] Current Account: ", accounts[0]);
         setCurrentAccount(accounts[0]);
         // route to the home page
-        window.location.href = "/";   
+        window.location.href = "/";
       }
     );
 
@@ -46,7 +46,7 @@ function App() {
       function (accounts: string[]) {
         // Time to reload your interface with accounts[0]!
         console.log("[APP unmount] Current Account: ", accounts[0]);
-        setCurrentAccount(accounts[0]);       
+        setCurrentAccount(accounts[0]);
       }
     );
   }, []);

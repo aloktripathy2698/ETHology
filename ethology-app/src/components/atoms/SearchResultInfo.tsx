@@ -50,7 +50,7 @@ const SearchResultInfo = () => {
       // console.log("isPoAlreadyRaised: ", isAlreadyRaised);
       const status = await contract.methods
         .raisePo(productId, price)
-        .send({ from: currentAccount, gas: "1000000" });
+        .send({ from: currentAccount, gas: "1000000"});
       console.log("RaisePO Status: ", status);
       enqueueSnackbar("Purchase Order Raised Successfully", {
         variant: "success",

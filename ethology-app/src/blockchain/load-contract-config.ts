@@ -6,19 +6,25 @@ import Web3 from "web3";
 import contractInfo from "./build/contracts/Ethology.json";
 import truffleConfig from "./truffle-config";
 
+const providerUrl =
+  process.env.REACT_APP_MODE === "local"
+    ? `http://${truffleConfig.networks.development.host}:${truffleConfig.networks.development.port}`
+    : (process.env.REACT_APP_INFURA_ENDPOINT as string);
+
+console.log("Provider URL: ", providerUrl);
+
 // instantiate the web3 object
 const web3Instance: Web3 = new Web3(
-  new Web3.providers.HttpProvider(
-    `http://${truffleConfig.networks.development.host}:${truffleConfig.networks.development.port}`
-  )
+  new Web3.providers.HttpProvider(providerUrl)
 );
 
-// console.log("web3: ", web3Instance);
-
+console.log("[DEBUG] Contract address: ", process.env.REACT_APP_CONTRACT_ADDRESS);
 // getting the deployed contract
 const contract = new web3Instance.eth.Contract(
   contractInfo.abi as any,
-  contractInfo.networks[5777].address
+  process.env.REACT_APP_MODE === "local"
+    ? contractInfo.networks[5777].address
+    : process.env.REACT_APP_CONTRACT_ADDRESS
 );
 
 // console.log("[DEBUG] Contract info", contract);
