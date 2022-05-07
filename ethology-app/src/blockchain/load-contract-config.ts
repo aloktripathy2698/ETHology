@@ -14,17 +14,25 @@ const providerUrl =
 console.log("Provider URL: ", providerUrl);
 
 // instantiate the web3 object
+// const web3Instance: Web3 = new Web3(
+//   new Web3.providers.HttpProvider(providerUrl)
+// );
+
 const web3Instance: Web3 = new Web3(
   new Web3.providers.HttpProvider(providerUrl)
 );
 
-console.log("[DEBUG] Contract address: ", process.env.REACT_APP_CONTRACT_ADDRESS);
+console.log(
+  "[DEBUG] Contract address: ",
+  process.env.REACT_APP_CONTRACT_ADDRESS
+);
+
 // getting the deployed contract
 const contract = new web3Instance.eth.Contract(
   contractInfo.abi as any,
   process.env.REACT_APP_MODE === "local"
     ? contractInfo.networks[5777].address
-    : process.env.REACT_APP_CONTRACT_ADDRESS
+    : contractInfo.networks[3].address
 );
 
 // console.log("[DEBUG] Contract info", contract);

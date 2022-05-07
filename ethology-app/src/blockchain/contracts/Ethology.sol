@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <=0.9.0;
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 // contract for healthcare marketplace
-contract Ethology {
+contract Ethology is ERC20 {
     // structs for representing the data
     struct product {
         uint256 id;
@@ -44,9 +45,10 @@ contract Ethology {
     purchaseOrder[] buyerPO;
 
     // constructor
-    constructor() payable {
+    constructor() payable ERC20("Ethology", "HETH") {
         supplier = msg.sender;
-        payable(supplier).transfer(msg.value);
+        _mint(supplier, 1000*10**18);
+        // payable(supplier).transfer(msg.value);
     }
 
     //  modifiers for restricted functions
