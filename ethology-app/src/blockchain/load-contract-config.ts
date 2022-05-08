@@ -6,8 +6,6 @@ import Web3 from "web3";
 import contractInfo from "./build/contracts/Ethology.json";
 import truffleConfig from "./truffle-config";
 
-const HDWalletProvider = require("@truffle/hdwallet-provider");
-
 const providerUrl =
   process.env.REACT_APP_MODE === "local"
     ? `http://${truffleConfig.networks.development.host}:${truffleConfig.networks.development.port}`
@@ -35,6 +33,7 @@ console.log(
 //   new Web3.providers.HttpProvider(providerUrl)
 // );
 
+// metamask provider
 const web3Instance: Web3 = new Web3((window as any).ethereum);
 
 console.log(
@@ -63,9 +62,18 @@ const fetchAccountDetails = async () => {
   return accounts;
 };
 
-// Metamask specific changes
-// (window as any).ethereum.on("accountsChanged", (accounts: string[]) => {
-//   console.log("Metamask account changed! ", accounts);
-// });
+const fetchCurrentAccountBalanceHETH = async () => {
+  const accounts = await web3Instance.eth.getAccounts();
+  // const balance = await web3Instance.eth.getBalance(accounts[0]);
+  const balance = await contract.methods.balanceOf(accounts[0]).call();
+  console.log("[DEBUG] Balance: ", balance);
+  return (balance / 10 ** 18).toString();
+};
 
-export { web3Instance, contract, fetchAccountDetails, contractAddress };
+export {
+  web3Instance,
+  contract,
+  fetchAccountDetails,
+  fetchCurrentAccountBalanceHETH,
+  contractAddress,
+};

@@ -7,7 +7,10 @@ import ProgressStepper from "../atoms/ProgressStepper";
 import NoResults from "../atoms/NoResults";
 import SearchResultSkeleton from "../SearchResultSkeleton";
 import { getCurrentAccount, isOwnerLoggedIn } from "../../utils";
-import { contract } from "../../blockchain/load-contract-config";
+import {
+  contract,
+  fetchCurrentAccountBalanceHETH,
+} from "../../blockchain/load-contract-config";
 import { BUYER_PHASE_MAPPING, SUPPLIER_PHASE_MAPPING } from "../constants";
 import { useSnackbar } from "notistack";
 
@@ -18,12 +21,15 @@ const Dashboard = (props: IDashboardProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const [balance, setBalance] = useState<string>("");
 
   const fetchOwnerInfo = async () => {
     const ownerInfo = await isOwnerLoggedIn();
     console.log("isOwnerLoggedIn", ownerInfo);
     setIsOwner(ownerInfo);
     setIsLoading(false);
+    const accountBalance = await fetchCurrentAccountBalanceHETH();
+    setBalance(accountBalance);
   };
 
   const getPOList = async () => {
@@ -37,7 +43,7 @@ const Dashboard = (props: IDashboardProps) => {
       const currentAccount = await getCurrentAccount();
       console.log("[getPOList] currentAccount: ", currentAccount);
       if (isOwner) {
-        setPOList(list);        
+        setPOList(list);
       } else {
         const filteredList = list.filter((item: Record<string, string>) => {
           return item.buyer.toLowerCase() === currentAccount.toLowerCase();
@@ -69,7 +75,16 @@ const Dashboard = (props: IDashboardProps) => {
         sx={{ fontWeight: "bold", fontSize: 30, opacity: 0.5 }}
       >
         {isOwner ? "Admin Dashboard" : "User Dashboard"}
-      </Typography>      
+      </Typography>
+      <Grid item xs={12}>
+        <Typography
+          variant="h5"
+          fontSize={15}
+          sx={{ fontWeight: 'bold', opacity: 0.7, marginRight: 2 }}
+        >
+          {`Balance: ${balance} HETHs`}
+        </Typography>
+      </Grid>
       {isLoading ? (
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
           <Grid item key={i} xs={12} sx={{ width: "100%" }}>

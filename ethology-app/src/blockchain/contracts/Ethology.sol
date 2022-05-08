@@ -47,7 +47,7 @@ contract Ethology is ERC20 {
     // constructor
     constructor() payable ERC20("Ethology", "HETH") {
         supplier = msg.sender;
-        _mint(supplier, 1000*10**18);
+        _mint(supplier, 1000000*10**18);
         // payable(supplier).transfer(msg.value);
     }
 

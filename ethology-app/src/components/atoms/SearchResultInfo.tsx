@@ -2,14 +2,13 @@ import { Button, CircularProgress, Grid, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { contract, web3Instance } from "../../blockchain/load-contract-config";
+import { contract } from "../../blockchain/load-contract-config";
 import { getLocalDbData } from "../../services/search";
 import { getCurrentAccount } from "../../utils";
 import { PRODUCT_DETAILS_LABEL } from "../constants";
 import SearchResultSkeleton from "../SearchResultSkeleton";
 import NoResults from "./NoResults";
 import SearchResult from "./SearchResult";
-const getRevertReason = require("eth-revert-reason");
 
 const SearchResultInfo = () => {
   const [params] = useSearchParams();
