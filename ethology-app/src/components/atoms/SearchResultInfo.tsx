@@ -2,13 +2,14 @@ import { Button, CircularProgress, Grid, Typography } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { contract } from "../../blockchain/load-contract-config";
+import { contract, web3Instance } from "../../blockchain/load-contract-config";
 import { getLocalDbData } from "../../services/search";
 import { getCurrentAccount } from "../../utils";
 import { PRODUCT_DETAILS_LABEL } from "../constants";
 import SearchResultSkeleton from "../SearchResultSkeleton";
 import NoResults from "./NoResults";
 import SearchResult from "./SearchResult";
+const getRevertReason = require("eth-revert-reason");
 
 const SearchResultInfo = () => {
   const [params] = useSearchParams();
@@ -48,9 +49,36 @@ const SearchResultInfo = () => {
     try {
       // let isAlreadyRaised = await contract.methods.isPoAlreadyRaised(productId).call();
       // console.log("isPoAlreadyRaised: ", isAlreadyRaised);
-      const status = await contract.methods
-        .raisePo(productId, price)
-        .send({ from: currentAccount, gas: "1000000"});
+      // const txn = await contract.methods.raisePo(productId, price);
+      // console.log('revert reason: ', await getRevertReason('0xe2bbabca586694de6aad496db534e5a6aeb2a16360c227d2f6b4774ee4e2f374'))
+      // console.log("gas: ", await txn.estimateGas({ from: currentAccount }));
+
+      // const txnOptions = {
+      //   from: currentAccount,
+      //   data: txn.encodeABI(),
+      //   gas: 5000000,
+      // };
+
+      // console.log("txnOptions: ", txnOptions);
+
+      // const signedTxn = await web3Instance.eth.accounts.signTransaction(
+      //   txnOptions,
+      //   process.env.REACT_APP_PRIVATE_KEY3 || ""
+      // );
+
+      // console.log("signedTxn: ", signedTxn);
+
+      // const status = await web3Instance.eth.sendSignedTransaction(
+      //   signedTxn.rawTransaction as string
+      // );
+
+      // const status = await web3Instance.eth.sendTransaction(txnOptions);
+
+      const status = await contract.methods.raisePo(productId, price).send({
+        from: currentAccount,
+        gas: 5000000,
+      });
+
       console.log("RaisePO Status: ", status);
       enqueueSnackbar("Purchase Order Raised Successfully", {
         variant: "success",

@@ -11,6 +11,7 @@ import { IProgressStepper } from "../../interfaces/interface";
 import { useSnackbar } from "notistack";
 import { contract, web3Instance } from "../../blockchain/load-contract-config";
 import { getCurrentAccount, getOwnerAccount } from "../../utils";
+import contractInfo from "../../blockchain/build/contracts/Ethology.json";
 
 const ProgressStepper = (props: IProgressStepper) => {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -34,7 +35,7 @@ const ProgressStepper = (props: IProgressStepper) => {
       setNextDisabled(true);
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
       return;
-    } else if(activeStep < 2){
+    } else if (activeStep < 2) {
       // else call the contract and update the status
       try {
         const currentAccount = await getCurrentAccount();
@@ -72,6 +73,13 @@ const ProgressStepper = (props: IProgressStepper) => {
       //   gas: 3000000,
       // });
       // console.log("[handleFreeze] status: ", status);
+      const convertToHETH = (address: string, amount: string) => {
+        return web3Instance.eth.abi.encodeFunctionCall(
+          contractInfo.abi as any,
+          [address, amount]
+        );
+      };
+
       const price_num: number = parseInt(price, 10) * 0.0001;
       const priceInWei = web3Instance.utils.toWei(price_num + "", "ether");
       const status = await (window as any).ethereum.request({
@@ -80,7 +88,8 @@ const ProgressStepper = (props: IProgressStepper) => {
           {
             from: currentAccount,
             to: ownerAccount,
-            value: priceInWei,
+            // value: priceInWei,
+            data: convertToHETH(ownerAccount, price_num + ""),
             gas: "100000",
           },
         ],
