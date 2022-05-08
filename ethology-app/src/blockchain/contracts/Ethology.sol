@@ -138,6 +138,17 @@ contract Ethology is ERC20 {
         return true;
     }
 
+    // function for payment to the seller
+    function payInHETH(address contractAddress, uint256 amount) payable public onlyBuyer {
+        IERC20 token = IERC20(contractAddress);        
+        // check if the amount is greater than the balance
+        require(token.allowance(msg.sender, supplier) >= amount, "Insufficient balance");
+        // transfer the amount to the supplier
+        require(token.transferFrom(msg.sender, supplier, amount), "HETH Transfer failed");
+        // update the balance
+        emit Transfer(msg.sender, supplier, amount);
+    }
+
     // initial function to raise the purchase order
     function raisePo(uint256 id, uint256 price) public onlyBuyer {
         buyerPO.push(
@@ -148,9 +159,6 @@ contract Ethology is ERC20 {
                 id: id,
                 buyer: msg.sender
             })
-        );
-
-        // update the balance too
-        balances[msg.sender] = 101;
+        );        
     }
 }
