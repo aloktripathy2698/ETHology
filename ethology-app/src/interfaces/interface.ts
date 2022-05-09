@@ -120,3 +120,11 @@ export interface IProgressStepper {
   buyerStatus: string;
   supplierStatus: string;
 }
+
+export interface IAlertDialog {
+  header: string;
+  message: string;
+  open: boolean;
+  btn1: string;
+  btn2: string;
+}

@@ -12,12 +12,23 @@ import { useSnackbar } from "notistack";
 import { contract, web3Instance } from "../../blockchain/load-contract-config";
 import { getCurrentAccount, getOwnerAccount } from "../../utils";
 import contractInfo from "../../blockchain/build/contracts/Ethology.json";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 const ProgressStepper = (props: IProgressStepper) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [nextDisabled, setNextDisabled] = React.useState(false);
   const [withdrawDisabled, setWithdrawDisabled] = React.useState(false);
   const [freezeDisabled, setFreezeDisabled] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
+
   const { id, steps, account, buyerStatus, supplierStatus, isOwner, price } =
     props;
   const { enqueueSnackbar } = useSnackbar();
@@ -55,7 +66,7 @@ const ProgressStepper = (props: IProgressStepper) => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  const handleFreeze = async () => {
+  const handleFreeze = async (mode: string) => {
     // update the status in the smart contract
     try {
       const currentAccount = await getCurrentAccount();
@@ -64,37 +75,37 @@ const ProgressStepper = (props: IProgressStepper) => {
       console.log("Buyer Balance: ", buyerBalance);
       const ownerAccount = await getOwnerAccount();
       console.log("Owner Account: ", ownerAccount);
-
+      console.log("Contract Address: ", process.env.REACT_APP_CONTRACT_ADDRESS);
       // first initiate the payment,  if the payment is successful then freeze the PO
-      // const status = await contract.methods.initiatePayment(id).send({
-      //   from: currentAccount,
-      //   // value: price,
-      //   value: web3Instance.utils.toWei("99", "ether"),
-      //   gas: 3000000,
-      // });
-      // console.log("[handleFreeze] status: ", status);
-      const convertToHETH = (address: string, amount: string) => {
-        return web3Instance.eth.abi.encodeFunctionCall(
-          contractInfo.abi as any,
-          [address, amount]
-        );
-      };
+      if (mode === "heth") {
+        const status = await contract.methods
+          .payInHETH(process.env.REACT_APP_CONTRACT_ADDRESS, 100)
+          .send({ from: currentAccount, gas: 3000000 });
+        console.log("[handleFreeze] HETH status: ", status);
+      } else {
+        // const convertToHETH = (address: string, amount: string) => {
+        //   return web3Instance.eth.abi.encodeFunctionCall(
+        //     contractInfo.abi as any,
+        //     [address, amount]
+        //   );
+        // };
 
-      const price_num: number = parseInt(price, 10) * 0.0001;
-      const priceInWei = web3Instance.utils.toWei(price_num + "", "ether");
-      const status = await (window as any).ethereum.request({
-        method: "eth_sendTransaction",
-        params: [
-          {
-            from: currentAccount,
-            to: ownerAccount,
-            // value: priceInWei,
-            data: convertToHETH(ownerAccount, price_num + ""),
-            gas: "100000",
-          },
-        ],
-      });
-      console.log("[handleFreeze] status: ", status);
+        const price_num: number = parseInt(price, 10) * 0.0001;
+        const priceInWei = web3Instance.utils.toWei(price_num + "", "ether");
+        const status = await (window as any).ethereum.request({
+          method: "eth_sendTransaction",
+          params: [
+            {
+              from: currentAccount,
+              to: ownerAccount,
+              value: priceInWei,
+              // data: convertToHETH(ownerAccount, price_num + ""),
+              gas: "100000",
+            },
+          ],
+        });
+        console.log("[handleFreeze] ETH status: ", status);
+      }
 
       const result = await contract.methods
         .updateBuyerPhase("1", id, account)
@@ -107,6 +118,7 @@ const ProgressStepper = (props: IProgressStepper) => {
       // const message = errorStr.substr(errorStr.lastIndexOf(":") + 1).trim();
       console.log("Error: ", errorStr);
       enqueueSnackbar(errorStr, { variant: "error" });
+      handleClose();
     }
   };
 
@@ -191,30 +203,55 @@ const ProgressStepper = (props: IProgressStepper) => {
       )}
     </Box>
   ) : (
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        alignItems: "flex-start",
-        alignContent: "space-between",
-      }}
-    >
-      <Button
-        variant="contained"
-        disabled={freezeDisabled}
-        sx={{ mr: 1 }}
-        onClick={handleFreeze}
+    <>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
       >
-        Freeze
-      </Button>
-      <Button
-        variant="text"
-        disabled={withdrawDisabled}
-        onClick={handleWithdraw}
+        <DialogTitle id="alert-dialog-title">
+          {"How do you want to pay?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Please select the mode of payment from any of the buttons below.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={() => handleFreeze("eth")}>
+            ETH
+          </Button>
+          <Button onClick={() => handleFreeze("heth")} autoFocus>
+            HETH
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          alignItems: "flex-start",
+          alignContent: "space-between",
+        }}
       >
-        Withdraw
-      </Button>
-    </Box>
+        <Button
+          variant="contained"
+          disabled={freezeDisabled}
+          sx={{ mr: 1 }}
+          onClick={handleOpen}
+        >
+          Freeze
+        </Button>
+        <Button
+          variant="text"
+          disabled={withdrawDisabled}
+          onClick={handleWithdraw}
+        >
+          Withdraw
+        </Button>
+      </Box>
+    </>
   );
 };
 

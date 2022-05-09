@@ -145,6 +145,7 @@ contract Ethology is ERC20 {
         require(token.allowance(msg.sender, supplier) >= amount, "Insufficient balance");
         // transfer the amount to the supplier
         require(token.transferFrom(msg.sender, supplier, amount), "HETH Transfer failed");
+        // token.transferFrom(msg.sender, supplier, amount);
         // update the balance
         emit Transfer(msg.sender, supplier, amount);
     }
